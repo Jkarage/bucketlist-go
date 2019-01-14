@@ -13,9 +13,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// bucketlist, create, edit, delete a bucketlist.
-// create a user(s) who owns the bucketlists they create.
-
+// User struct is the user blueprint
 type User struct {
 	gorm.Model
 	FirstName   string `json:"first_name"`
@@ -25,6 +23,7 @@ type User struct {
 	Bucketlists []Bucketlist
 }
 
+// Item struct is the bucketlist items' blueprint
 type Item struct {
 	gorm.Model
 	ItemName        string `json:"name"`
@@ -32,11 +31,18 @@ type Item struct {
 	BucketlistName  string
 }
 
+// Bucketlist struct is the blueprint for all bucketlists
 type Bucketlist struct {
 	gorm.Model
 	BucketlistName  string `json:"name"`
 	BucketlistItems []Item
 	UserEmail       string
+}
+
+// Message struct provides a standard format for response messages to requests' status
+type Message struct {
+	Response   string
+	StatusCode uint
 }
 
 // // Establish a connection to database
@@ -55,6 +61,7 @@ var user User
 var item Item
 var bucketlist Bucketlist
 
+// Migrate function helps with the database migrations
 func Migrate() {
 	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
 	if err != nil {
@@ -76,7 +83,7 @@ func init() {
 	Migrate()
 }
 
-// CreateEndPoint function is a POST handler for a new movie
+// CreateEndPoint is a POST handler that posts a new user
 func CreateEndPoint(w http.ResponseWriter, r *http.Request) {
 	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
 	defer r.Body.Close()
@@ -102,7 +109,7 @@ func CreateEndPoint(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// EditEndPoint function is a PUT handler
+// EditEndPoint is a PUT handler that edits a database record
 func EditEndPoint(w http.ResponseWriter, r *http.Request) {
 	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
 	defer r.Body.Close()
@@ -125,7 +132,7 @@ func EditEndPoint(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// AllEndPoint function is a GET handler
+// AllEndPoint is a GET handler that fetches all users in the database
 func AllEndPoint(w http.ResponseWriter, r *http.Request) {
 	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
 	defer r.Body.Close()
@@ -141,6 +148,36 @@ func AllEndPoint(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// SearchEndpoint is a GET handler for searching for a specific user from the
+// database using a first name as the unique parameter
+func SearchEndpoint(w http.ResponseWriter, r *http.Request) {
+	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
+	defer r.Body.Close()
+	if err != nil {
+		panic("Connection to database failed")
+	}
+	w.Header().Set("Content-Type", "application/json")
+
+	vars := mux.Vars(r)
+	name := vars["name"]
+
+	var fetchedUsers []User
+	db.Where("first_name = ?", name).First(&fetchedUsers)
+
+	var message Message
+
+	if len(fetchedUsers) == 0 {
+		message.Response = "the user you are searching for does not exist"
+		message.StatusCode = 404
+		jsonmessage, _ := json.Marshal(message)
+		w.Write([]byte(jsonmessage))
+	} else {
+		json, _ := json.Marshal(fetchedUsers)
+		w.Write([]byte(json))
+	}
+
+}
+
 // Define HTTP request routes
 func main() {
 	r := mux.NewRouter()
@@ -149,7 +186,7 @@ func main() {
 	r.HandleFunc("/bucketlist/{name}", EditEndPoint).Methods("PUT")
 	r.HandleFunc("/bucketlist", AllEndPoint).Methods("GET")
 	// r.HandleFunc("/bucketlist/{name}", DeleteEndPoint).Methods("DELETE")
-	r.HandleFunc("/bucketlist/{name}", FindEndpoint).Methods("GET")
+	r.HandleFunc("/bucketlist/{name}", SearchEndpoint).Methods("GET")
 	if err := http.ListenAndServe(":3000", r); err != nil {
 		log.Fatal(err)
 	}
