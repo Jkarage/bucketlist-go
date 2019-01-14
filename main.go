@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -110,47 +111,35 @@ func EditEndPoint(w http.ResponseWriter, r *http.Request) {
 	}
 	vars := mux.Vars(r)
 	name := vars["name"]
-	fmt.Println(name)
 
-	if db.Debug().First(&user, "first_name = ?", name) != nil {
-		password := []byte(r.FormValue("password"))
-		hashedPassword, _ := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
+	password := []byte(r.FormValue("password"))
+	hashedPassword, _ := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
 
-		db.Debug().Model(&user).Updates(User{
-			FirstName: r.FormValue("first_name"),
-			Surname:   r.FormValue("surname"),
-			UserEmail: r.FormValue("email"),
-			Password:  string(hashedPassword),
-		})
-		fmt.Println("User updated successfully")
-	} else {
-		fmt.Println("user does not exist")
-	}
-
-	// at this point all it does is find the record it is looking for.
-	// Editing the record has not yet been added.
+	db.Debug().Model(&user).Where("first_name = ?", name).Update(User{
+		FirstName: r.FormValue("first_name"),
+		Surname:   r.FormValue("surname"),
+		UserEmail: r.FormValue("email"),
+		Password:  string(hashedPassword),
+	})
+	fmt.Println("User updated successfully")
 
 }
 
 // AllEndPoint function is a GET handler
-// func AllEndPoint(w http.ResponseWriter, r *http.Request) {
-// 	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
-// 	defer r.Body.Close()
-// 	if err != nil {
-// 		panic("Connection to database failed")
-// 	}
-// 	w.Header().Set("Content-Type", "application/json")
-// 	db.Debug().Find(&user)
-// 	response, _ := json.Marshal(&user)
-// 	usersList := []User{}
-// 	for _, value := range response {
-// 		usersList = append(usersList, value)
-// 		// w.Write(value)
-// 		// fmt.Println(key)
-// 	}
-// 	w.Write(usersList)
+func AllEndPoint(w http.ResponseWriter, r *http.Request) {
+	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
+	defer r.Body.Close()
+	if err != nil {
+		panic("Connection to database failed")
+	}
+	w.Header().Set("Content-Type", "application/json")
 
-// }
+	var users []User
+	db.Find(&users)
+	json, _ := json.Marshal(users)
+	w.Write([]byte(json))
+
+}
 
 // Define HTTP request routes
 func main() {
@@ -158,8 +147,9 @@ func main() {
 	// r.HandleFunc("/bucketlist", AllEndPoint).Methods("GET")
 	r.HandleFunc("/bucketlist", CreateEndPoint).Methods("POST")
 	r.HandleFunc("/bucketlist/{name}", EditEndPoint).Methods("PUT")
+	r.HandleFunc("/bucketlist", AllEndPoint).Methods("GET")
 	// r.HandleFunc("/bucketlist/{name}", DeleteEndPoint).Methods("DELETE")
-	// r.HandleFunc("/bucketlist/{name}", FindEndpoint).Methods("GET")
+	r.HandleFunc("/bucketlist/{name}", FindEndpoint).Methods("GET")
 	if err := http.ListenAndServe(":3000", r); err != nil {
 		log.Fatal(err)
 	}
