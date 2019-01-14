@@ -105,7 +105,12 @@ func CreateEndPoint(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db.Debug().Create(&user)
-	fmt.Println("User persisted vizuri")
+	var message Message
+
+	message.Response = "New user created successfully"
+	message.StatusCode = 200
+	jsonmessage, _ := json.Marshal(message)
+	w.Write([]byte(jsonmessage))
 
 }
 
@@ -128,7 +133,12 @@ func EditEndPoint(w http.ResponseWriter, r *http.Request) {
 		UserEmail: r.FormValue("email"),
 		Password:  string(hashedPassword),
 	})
-	fmt.Println("User updated successfully")
+	var message Message
+
+	message.Response = "User Updated successfully"
+	message.StatusCode = 200
+	jsonmessage, _ := json.Marshal(message)
+	w.Write([]byte(jsonmessage))
 
 }
 
