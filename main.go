@@ -178,6 +178,30 @@ func SearchEndpoint(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// DeleteEndPoint handler deletes a user record using a given user name
+func DeleteEndPoint(w http.ResponseWriter, r *http.Request) {
+	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
+	defer r.Body.Close()
+	if err != nil {
+		panic("Connection to database failed")
+	}
+	w.Header().Set("Content-Type", "application/json")
+
+	vars := mux.Vars(r)
+	name := vars["name"]
+
+	var user User
+	db.Debug().Where("first_name = ?", name).Delete(&user)
+
+	var message Message
+
+	message.Response = "user deleted successfully"
+	message.StatusCode = 200
+	jsonmessage, _ := json.Marshal(message)
+	w.Write([]byte(jsonmessage))
+
+}
+
 // Define HTTP request routes
 func main() {
 	r := mux.NewRouter()
@@ -185,7 +209,7 @@ func main() {
 	r.HandleFunc("/bucketlist", CreateEndPoint).Methods("POST")
 	r.HandleFunc("/bucketlist/{name}", EditEndPoint).Methods("PUT")
 	r.HandleFunc("/bucketlist", AllEndPoint).Methods("GET")
-	// r.HandleFunc("/bucketlist/{name}", DeleteEndPoint).Methods("DELETE")
+	r.HandleFunc("/bucketlist/{name}", DeleteEndPoint).Methods("DELETE")
 	r.HandleFunc("/bucketlist/{name}", SearchEndpoint).Methods("GET")
 	if err := http.ListenAndServe(":3000", r); err != nil {
 		log.Fatal(err)
