@@ -16,17 +16,17 @@ import (
 // User struct is the user blueprint
 type User struct {
 	gorm.Model
-	FirstName   string `json:"first_name"`
-	Surname     string `json:"surname"`
-	UserEmail   string `json:"email"`
-	Password    string `json:"password"`
+	FirstName   string `json:"first_name" gorm:"not null"`
+	Surname     string `json:"surname" gorm:"not null"`
+	UserEmail   string `json:"email" gorm:"not null;unique"`
+	Password    string `json:"password" gorm:"not null"`
 	Bucketlists []Bucketlist
 }
 
 // Item struct is the bucketlist items' blueprint
 type Item struct {
 	gorm.Model
-	ItemName        string `json:"name"`
+	ItemName        string `json:"name" gorm:"not null"`
 	ItemDescription string `json:"description"`
 	BucketlistName  string
 }
@@ -34,15 +34,16 @@ type Item struct {
 // Bucketlist struct is the blueprint for all bucketlists
 type Bucketlist struct {
 	gorm.Model
-	BucketlistName  string `json:"name"`
+	BucketlistName  string `json:"name" gorm:"not null"`
 	BucketlistItems []Item
 	UserEmail       string
 }
 
 // Message struct provides a standard format for response messages to requests' status
 type Message struct {
-	Response   string
-	StatusCode uint
+	Response     string
+	StatusCode   uint
+	ErrorMessage error
 }
 
 // // Establish a connection to database
@@ -60,6 +61,7 @@ type Message struct {
 var user User
 var item Item
 var bucketlist Bucketlist
+var message Message
 
 // Migrate function helps with the database migrations
 func Migrate() {
@@ -104,13 +106,19 @@ func CreateEndPoint(w http.ResponseWriter, r *http.Request) {
 		Password:  string(hashedPassword),
 	}
 
-	db.Debug().Create(&user)
-	var message Message
-
-	message.Response = "New user created successfully"
-	message.StatusCode = 200
-	jsonmessage, _ := json.Marshal(message)
-	w.Write([]byte(jsonmessage))
+	feedback := db.Debug().Create(&user)
+	if feedback.Error != nil {
+		message.Response = "An error occured!"
+		message.ErrorMessage = feedback.Error
+		jsonmessage, _ := json.Marshal(message)
+		w.Write([]byte(jsonmessage))
+	} else {
+		message.Response = "New user created successfully"
+		message.StatusCode = 200
+		message.ErrorMessage = nil
+		jsonmessage, _ := json.Marshal(message)
+		w.Write([]byte(jsonmessage))
+	}
 
 }
 
@@ -127,18 +135,24 @@ func EditEndPoint(w http.ResponseWriter, r *http.Request) {
 	password := []byte(r.FormValue("password"))
 	hashedPassword, _ := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
 
-	db.Debug().Model(&user).Where("first_name = ?", name).Update(User{
+	feedback := db.Debug().Model(&user).Where("first_name = ?", name).Update(User{
 		FirstName: r.FormValue("first_name"),
 		Surname:   r.FormValue("surname"),
 		UserEmail: r.FormValue("email"),
 		Password:  string(hashedPassword),
 	})
-	var message Message
-
-	message.Response = "User Updated successfully"
-	message.StatusCode = 200
-	jsonmessage, _ := json.Marshal(message)
-	w.Write([]byte(jsonmessage))
+	if feedback.Error != nil {
+		message.Response = "An error occured!"
+		message.ErrorMessage = feedback.Error
+		jsonmessage, _ := json.Marshal(message)
+		w.Write([]byte(jsonmessage))
+	} else {
+		message.Response = "User Updated successfully"
+		message.StatusCode = 200
+		// message.ErrorMessage = nil
+		jsonmessage, _ := json.Marshal(message)
+		w.Write([]byte(jsonmessage))
+	}
 
 }
 
@@ -152,9 +166,16 @@ func AllEndPoint(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	var users []User
-	db.Find(&users)
-	json, _ := json.Marshal(users)
-	w.Write([]byte(json))
+	feedback := db.Find(&users)
+	if feedback.Error != nil {
+		message.Response = "An error occured!"
+		message.ErrorMessage = feedback.Error
+		jsonmessage, _ := json.Marshal(message)
+		w.Write([]byte(jsonmessage))
+	} else {
+		json, _ := json.Marshal(users)
+		w.Write([]byte(json))
+	}
 
 }
 
@@ -179,6 +200,7 @@ func SearchEndpoint(w http.ResponseWriter, r *http.Request) {
 	if len(fetchedUsers) == 0 {
 		message.Response = "the user you are searching for does not exist"
 		message.StatusCode = 404
+		// message.ErrorMessage = nil
 		jsonmessage, _ := json.Marshal(message)
 		w.Write([]byte(jsonmessage))
 	} else {
@@ -202,9 +224,6 @@ func DeleteEndPoint(w http.ResponseWriter, r *http.Request) {
 
 	var user User
 	db.Debug().Where("first_name = ?", name).Delete(&user)
-
-	var message Message
-
 	message.Response = "user deleted successfully"
 	message.StatusCode = 200
 	jsonmessage, _ := json.Marshal(message)
@@ -225,3 +244,5 @@ func main() {
 		log.Fatal(err)
 	}
 }
+
+// validation shud also be done here...
