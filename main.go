@@ -237,8 +237,61 @@ var DeleteEndPoint = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reques
 var mySigningKey = []byte("secret")
 
 /* Handlers */
-var GetTokenHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	/* Create the token */
+// var GetTokenHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+// 	/* Create the token */
+// 	token := jwt.New(jwt.SigningMethodHS256)
+
+// 	// Create a map to store our claims
+// 	claims := token.Claims.(jwt.MapClaims)
+
+// 	/* Set token claims */
+// 	claims["admin"] = false
+// 	claims["email"] = user.UserEmail
+// 	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+
+// 	/* Sign the token with our secret */
+// 	tokenString, _ := token.SignedString(mySigningKey)
+
+// 	/* Finally, write the token to the browser window */
+// 	w.Write([]byte(tokenString))
+// })
+
+// SignIn handler signs in a user with a given email and password
+func SignIn(w http.ResponseWriter, r *http.Request) {
+	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
+	defer r.Body.Close()
+	if err != nil {
+		panic("Connection to database failed")
+	}
+	w.Header().Set("Content-Type", "application/json")
+
+	loginUser := r.FormValue("email")
+
+	var fetchedUsers []User
+
+	db.Where("user_email = ?", loginUser).First(&fetchedUsers)
+
+	loginpassword := []byte(r.FormValue("password"))
+	// loginhashedPassword, _ := bcrypt.GenerateFromPassword(loginpassword, bcrypt.DefaultCost)
+
+	if len(fetchedUsers) == 0 {
+		message.Response = "Invalid email or password"
+		message.StatusCode = 400
+		jsonmessage, _ := json.Marshal(message)
+		w.Write([]byte(jsonmessage))
+		return
+	}
+	if err = bcrypt.CompareHashAndPassword([]byte(fetchedUsers[0].Password), []byte(loginpassword)); err != nil {
+		// If the two passwords don't match, return a 401 status
+		w.WriteHeader(http.StatusUnauthorized)
+		message.Response = "Invalid email or password"
+		message.StatusCode = 401
+		fmt.Println(err)
+		jsonmessage, _ := json.Marshal(message)
+		w.Write([]byte(jsonmessage))
+		return
+	}
+
 	token := jwt.New(jwt.SigningMethodHS256)
 
 	// Create a map to store our claims
@@ -253,8 +306,12 @@ var GetTokenHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reque
 	tokenString, _ := token.SignedString(mySigningKey)
 
 	/* Finally, write the token to the browser window */
-	w.Write([]byte(tokenString))
-})
+	// w.Write([]byte(tokenString))
+	fmt.Println(tokenString)
+
+	json, _ := json.Marshal(fetchedUsers)
+	w.Write([]byte(json))
+}
 
 var jwtMiddleware = jwtmiddleware.New(jwtmiddleware.Options{
 	ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
@@ -262,43 +319,6 @@ var jwtMiddleware = jwtmiddleware.New(jwtmiddleware.Options{
 	},
 	SigningMethod: jwt.SigningMethodHS256,
 })
-
-// SignIn handler signs in a user with a given email and password
-// func SignIn(w http.ResponseWriter, r *http.Request) {
-// 	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
-// 	defer r.Body.Close()
-// 	if err != nil {
-// 		panic("Connection to database failed")
-// 	}
-// 	w.Header().Set("Content-Type", "application/json")
-
-// 	loginUser := r.FormValue("email")
-
-// 	var fetchedUsers []User
-
-// 	db.Where("user_email = ?", loginUser).First(&fetchedUsers)
-
-// 	loginpassword := []byte(r.FormValue("password"))
-// 	loginhashedPassword, _ := bcrypt.GenerateFromPassword(loginpassword, bcrypt.DefaultCost)
-
-// 	fmt.Println(fetchedUsers)
-// 	fmt.Println(fetchedUsers[0].Password)
-// 	fmt.Println(string(loginhashedPassword))
-// 	if len(fetchedUsers) == 0 {
-// 		message.Response = "Invalid email or password"
-// 		message.StatusCode = 400
-// 		jsonmessage, _ := json.Marshal(message)
-// 		w.Write([]byte(jsonmessage))
-// 	} else if fetchedUsers[0].Password != string(loginhashedPassword) {
-// 		message.Response = "Invalid email or password"
-// 		message.StatusCode = 400
-// 		jsonmessage, _ := json.Marshal(message)
-// 		w.Write([]byte(jsonmessage))
-// 	} else {
-// 		json, _ := json.Marshal(fetchedUsers)
-// 		w.Write([]byte(json))
-// 	}
-// }
 
 // Define HTTP request routes
 func main() {
@@ -309,8 +329,8 @@ func main() {
 	r.Handle("/bucketlist", jwtMiddleware.Handler(AllEndPoint)).Methods("GET")
 	r.Handle("/bucketlist/{name}", jwtMiddleware.Handler(DeleteEndPoint)).Methods("DELETE")
 	r.Handle("/bucketlist/{name}", jwtMiddleware.Handler(SearchEndpoint)).Methods("GET")
-	r.Handle("/token", GetTokenHandler).Methods("GET")
-	// r.HandleFunc("/signin", SignIn).Methods("POST")
+	// r.Handle("/token", GetTokenHandler).Methods("GET")
+	r.HandleFunc("/signin", SignIn).Methods("POST")
 
 	if err := http.ListenAndServe(":3000", r); err != nil {
 		log.Fatal(err)
