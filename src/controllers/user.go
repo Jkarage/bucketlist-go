@@ -38,9 +38,6 @@ type User struct {
 // }
 
 var user User
-var item Item
-var bucketlist Bucketlist
-var message Message
 
 // Migrate function helps with the database migrations
 func Migrate() {

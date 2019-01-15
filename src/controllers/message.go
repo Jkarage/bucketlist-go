@@ -11,3 +11,5 @@ type Message struct {
 	StatusCode   uint
 	ErrorMessage error
 }
+
+var message Message

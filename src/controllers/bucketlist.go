@@ -13,3 +13,5 @@ type Bucketlist struct {
 	BucketlistItems []Item
 	UserEmail       string
 }
+
+var bucketlist Bucketlist

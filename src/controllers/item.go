@@ -13,3 +13,5 @@ type Item struct {
 	ItemDescription string `json:"description"`
 	BucketlistName  string
 }
+
+var item Item
