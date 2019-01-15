@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
+	jwtmiddleware "github.com/auth0/go-jwt-middleware"
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -86,7 +89,7 @@ func init() {
 }
 
 // CreateEndPoint is a POST handler that posts a new user
-func CreateEndPoint(w http.ResponseWriter, r *http.Request) {
+var CreateEndPoint = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
 	defer r.Body.Close()
 
@@ -120,10 +123,10 @@ func CreateEndPoint(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(jsonmessage))
 	}
 
-}
+})
 
 // EditEndPoint is a PUT handler that edits a database record
-func EditEndPoint(w http.ResponseWriter, r *http.Request) {
+var EditEndPoint = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
 	defer r.Body.Close()
 	if err != nil {
@@ -154,10 +157,10 @@ func EditEndPoint(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(jsonmessage))
 	}
 
-}
+})
 
 // AllEndPoint is a GET handler that fetches all users in the database
-func AllEndPoint(w http.ResponseWriter, r *http.Request) {
+var AllEndPoint = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
 	defer r.Body.Close()
 	if err != nil {
@@ -177,11 +180,11 @@ func AllEndPoint(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(json))
 	}
 
-}
+})
 
 // SearchEndpoint is a GET handler for searching for a specific user from the
 // database using a first name as the unique parameter
-func SearchEndpoint(w http.ResponseWriter, r *http.Request) {
+var SearchEndpoint = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
 	defer r.Body.Close()
 	if err != nil {
@@ -208,10 +211,10 @@ func SearchEndpoint(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(json))
 	}
 
-}
+})
 
 // DeleteEndPoint handler deletes a user record using a given user name
-func DeleteEndPoint(w http.ResponseWriter, r *http.Request) {
+var DeleteEndPoint = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
 	defer r.Body.Close()
 	if err != nil {
@@ -229,20 +232,87 @@ func DeleteEndPoint(w http.ResponseWriter, r *http.Request) {
 	jsonmessage, _ := json.Marshal(message)
 	w.Write([]byte(jsonmessage))
 
-}
+})
+
+var mySigningKey = []byte("secret")
+
+/* Handlers */
+var GetTokenHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	/* Create the token */
+	token := jwt.New(jwt.SigningMethodHS256)
+
+	// Create a map to store our claims
+	claims := token.Claims.(jwt.MapClaims)
+
+	/* Set token claims */
+	claims["admin"] = false
+	claims["email"] = user.UserEmail
+	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+
+	/* Sign the token with our secret */
+	tokenString, _ := token.SignedString(mySigningKey)
+
+	/* Finally, write the token to the browser window */
+	w.Write([]byte(tokenString))
+})
+
+var jwtMiddleware = jwtmiddleware.New(jwtmiddleware.Options{
+	ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
+		return mySigningKey, nil
+	},
+	SigningMethod: jwt.SigningMethodHS256,
+})
+
+// SignIn handler signs in a user with a given email and password
+// func SignIn(w http.ResponseWriter, r *http.Request) {
+// 	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
+// 	defer r.Body.Close()
+// 	if err != nil {
+// 		panic("Connection to database failed")
+// 	}
+// 	w.Header().Set("Content-Type", "application/json")
+
+// 	loginUser := r.FormValue("email")
+
+// 	var fetchedUsers []User
+
+// 	db.Where("user_email = ?", loginUser).First(&fetchedUsers)
+
+// 	loginpassword := []byte(r.FormValue("password"))
+// 	loginhashedPassword, _ := bcrypt.GenerateFromPassword(loginpassword, bcrypt.DefaultCost)
+
+// 	fmt.Println(fetchedUsers)
+// 	fmt.Println(fetchedUsers[0].Password)
+// 	fmt.Println(string(loginhashedPassword))
+// 	if len(fetchedUsers) == 0 {
+// 		message.Response = "Invalid email or password"
+// 		message.StatusCode = 400
+// 		jsonmessage, _ := json.Marshal(message)
+// 		w.Write([]byte(jsonmessage))
+// 	} else if fetchedUsers[0].Password != string(loginhashedPassword) {
+// 		message.Response = "Invalid email or password"
+// 		message.StatusCode = 400
+// 		jsonmessage, _ := json.Marshal(message)
+// 		w.Write([]byte(jsonmessage))
+// 	} else {
+// 		json, _ := json.Marshal(fetchedUsers)
+// 		w.Write([]byte(json))
+// 	}
+// }
 
 // Define HTTP request routes
 func main() {
 	r := mux.NewRouter()
-	// r.HandleFunc("/bucketlist", AllEndPoint).Methods("GET")
-	r.HandleFunc("/bucketlist", CreateEndPoint).Methods("POST")
-	r.HandleFunc("/bucketlist/{name}", EditEndPoint).Methods("PUT")
-	r.HandleFunc("/bucketlist", AllEndPoint).Methods("GET")
-	r.HandleFunc("/bucketlist/{name}", DeleteEndPoint).Methods("DELETE")
-	r.HandleFunc("/bucketlist/{name}", SearchEndpoint).Methods("GET")
+	r.Handle("/bucketlist", jwtMiddleware.Handler(AllEndPoint)).Methods("GET")
+	r.Handle("/bucketlist", jwtMiddleware.Handler(CreateEndPoint)).Methods("POST")
+	r.Handle("/bucketlist/{name}", jwtMiddleware.Handler(EditEndPoint)).Methods("PUT")
+	r.Handle("/bucketlist", jwtMiddleware.Handler(AllEndPoint)).Methods("GET")
+	r.Handle("/bucketlist/{name}", jwtMiddleware.Handler(DeleteEndPoint)).Methods("DELETE")
+	r.Handle("/bucketlist/{name}", jwtMiddleware.Handler(SearchEndpoint)).Methods("GET")
+	r.Handle("/token", GetTokenHandler).Methods("GET")
+	// r.HandleFunc("/signin", SignIn).Methods("POST")
+
 	if err := http.ListenAndServe(":3000", r); err != nil {
 		log.Fatal(err)
 	}
 }
-
-// validation shud also be done here...
