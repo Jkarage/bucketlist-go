@@ -1,4 +1,4 @@
-// routes package contains all the API endpoints/routes
+// Package routes contains all the API endpoints/routes
 package routes
 
 import (
@@ -14,7 +14,7 @@ func SetAllUserRoutes(router *mux.Router) *mux.Router {
 	router.Handle("/user", controllers.JwtMiddleware.Handler(controllers.AllEndPoint)).Methods("GET")
 
 	// Create a new user
-	router.Handle("/signup", controllers.JwtMiddleware.Handler(controllers.CreateEndPoint)).Methods("POST")
+	router.Handle("/signup", controllers.CreateEndPoint).Methods("POST")
 
 	// Edit a user
 	router.Handle("/user/{name}", controllers.JwtMiddleware.Handler(controllers.EditEndPoint)).Methods("PUT")

@@ -1,3 +1,4 @@
+// Package controllers holders all controllers/handlers for the user
 package controllers
 
 import (

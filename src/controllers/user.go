@@ -1,3 +1,4 @@
+// Package controllers holders all controllers/handlers for the user
 package controllers
 
 import (
@@ -22,7 +23,6 @@ type User struct {
 	Surname   string `json:"surname" gorm:"not null"`
 	UserEmail string `json:"email" gorm:"not null;unique"`
 	Password  string `json:"password" gorm:"not null"`
-	Token     string
 }
 
 // // Establish a connection to database
@@ -206,8 +206,6 @@ var DeleteEndPoint = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reques
 
 var mySigningKey = []byte("secret")
 
-var TokenString string
-
 // SignIn handler signs in a user with a given email and password
 func SignIn(w http.ResponseWriter, r *http.Request) {
 	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
@@ -218,13 +216,9 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	loginUser := r.FormValue("email")
-
 	var fetchedUsers []User
-
 	db.Where("user_email = ?", loginUser).First(&fetchedUsers)
-
 	loginpassword := []byte(r.FormValue("password"))
-	// loginhashedPassword, _ := bcrypt.GenerateFromPassword(loginpassword, bcrypt.DefaultCost)
 
 	if len(fetchedUsers) == 0 {
 		message.Response = "Invalid email or password"
@@ -255,21 +249,13 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 
 	/* Sign the token with our secret */
-	TokenString, _ = token.SignedString(mySigningKey)
+	tokenString, _ := token.SignedString(mySigningKey)
 
 	/* Finally, write the token to the browser window */
-	// w.Write([]byte(tokenString))
-	fmt.Println("TokenString is below:")
-	fmt.Println(TokenString)
-	email := r.FormValue("email")
-	db.Debug().Model(&user).Where("user_email = ?", email).Update(User{
-		Token: TokenString,
-	})
-
-	json, _ := json.Marshal(fetchedUsers)
-	w.Write([]byte(json))
+	w.Write([]byte(tokenString))
 }
 
+// JwtMiddleware returns the signin token string
 var JwtMiddleware = jwtmiddleware.New(jwtmiddleware.Options{
 	ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
 		return mySigningKey, nil
