@@ -18,11 +18,11 @@ import (
 // User struct is the user blueprint
 type User struct {
 	gorm.Model
-	FirstName   string `json:"first_name" gorm:"not null"`
-	Surname     string `json:"surname" gorm:"not null"`
-	UserEmail   string `json:"email" gorm:"not null;unique"`
-	Password    string `json:"password" gorm:"not null"`
-	Bucketlists []Bucketlist
+	FirstName string `json:"first_name" gorm:"not null"`
+	Surname   string `json:"surname" gorm:"not null"`
+	UserEmail string `json:"email" gorm:"not null;unique"`
+	Password  string `json:"password" gorm:"not null"`
+	Token     string
 }
 
 // // Establish a connection to database
@@ -45,10 +45,7 @@ func Migrate() {
 	if err != nil {
 		panic("Failed to connect database...")
 	}
-	db.AutoMigrate(&user, &item, &bucketlist)
-	db.Debug().Model(&item).AddForeignKey("bucketlist_name", "bucketlists(bucketlist_name)", "CASCADE", "CASCADE")
-	db.Debug().Model(&bucketlist).AddForeignKey("user_email", "users(user_email)", "CASCADE", "CASCADE")
-
+	db.AutoMigrate(&user)
 	fmt.Println("Migration successful...")
 	defer db.Close()
 }
@@ -209,6 +206,8 @@ var DeleteEndPoint = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reques
 
 var mySigningKey = []byte("secret")
 
+var TokenString string
+
 // SignIn handler signs in a user with a given email and password
 func SignIn(w http.ResponseWriter, r *http.Request) {
 	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
@@ -256,11 +255,16 @@ func SignIn(w http.ResponseWriter, r *http.Request) {
 	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 
 	/* Sign the token with our secret */
-	tokenString, _ := token.SignedString(mySigningKey)
+	TokenString, _ = token.SignedString(mySigningKey)
 
 	/* Finally, write the token to the browser window */
 	// w.Write([]byte(tokenString))
-	fmt.Println(tokenString)
+	fmt.Println("TokenString is below:")
+	fmt.Println(TokenString)
+	email := r.FormValue("email")
+	db.Debug().Model(&user).Where("user_email = ?", email).Update(User{
+		Token: TokenString,
+	})
 
 	json, _ := json.Marshal(fetchedUsers)
 	w.Write([]byte(json))
