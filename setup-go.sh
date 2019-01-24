@@ -12,15 +12,7 @@ install_go() {
     source $HOME/.profile
 }
 
-install_postgres() {
-    # sudo apt-get install -y postgresql postgresql-client postgresql-client-common libssl-dev postgresql-9.5
-    sudo apt-get -y -f install postgresql-9.5 postgresql-client postgresql-common ssl-cert postgresql-contrib-9.5 sysstat
-    sudo service postgresql initdb
-    sudo service postgresql start
-}
-
 main() {
-    install_postgres
     install_go
 }
 
