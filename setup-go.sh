@@ -13,7 +13,7 @@ install_go() {
 }
 
 install_postgres() {
-    sudo yum install postgresql postgresql-server postgresql-devel postgresql-contrib postgresql-docs
+    sudo apt-get install postgresql libpq-dev postgresql-client postgresql-client-common
     sudo service postgresql initdb
     sudo service postgresql start
 }
