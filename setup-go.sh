@@ -13,7 +13,8 @@ install_go() {
 }
 
 install_postgres() {
-    sudo apt-get install -y postgresql postgresql-client postgresql-client-common libssl-dev postgresql-9.5
+    # sudo apt-get install -y postgresql postgresql-client postgresql-client-common libssl-dev postgresql-9.5
+    sudo apt-get -y -f install postgresql postgresql-client ..
     sudo service postgresql initdb
     sudo service postgresql start
 }
