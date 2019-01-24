@@ -12,8 +12,15 @@ install_go() {
     source $HOME/.profile
 }
 
+install_postgres() {
+    sudo yum install postgresql postgresql-server postgresql-devel postgresql-contrib postgresql-docs
+    sudo service postgresql initdb
+    sudo service postgresql start
+}
+
 main() {
     install_go
+    install_postgres
 }
 
 main "$@"
