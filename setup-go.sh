@@ -19,8 +19,8 @@ install_postgres() {
 }
 
 main() {
-    install_go
     install_postgres
+    install_go
 }
 
 main "$@"
