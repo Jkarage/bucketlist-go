@@ -23,6 +23,8 @@ setup_go() {
     go get -u github.com/joho/godotenv
     go get -u github.com/jinzhu/gorm/dialects/postgres
 	go get -u golang.org/x/crypto/bcrypt
+    export GOPATH=~/bucketlist-go
+    echo "exported GOPATH"
     go install controllers
     echo "this is done 1"
     go install routes
