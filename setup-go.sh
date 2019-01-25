@@ -37,6 +37,7 @@ setup_go() {
 
 main() {
     install_go
+    setup_go
 }
 
 main "$@"
