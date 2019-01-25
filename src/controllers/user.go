@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"services"
 	"time"
 
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
@@ -25,44 +26,12 @@ type User struct {
 	Password  string `json:"password" gorm:"not null"`
 }
 
-// // Establish a connection to database
-// func Connect(server, database string) {
-// 	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
-// 	if err != nil {
-// 		panic("Failed to connect to the database...")
-// 		fmt.Println(err)
-// 	} else {
-// 		fmt.Println("Connection to the database successful...")
-// 	}
-// 	defer db.Close()
-// }
-
 var user User
-
-// Migrate function helps with the database migrations
-func Migrate() {
-	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
-	if err != nil {
-		panic("Failed to connect database...")
-	}
-	db.AutoMigrate(&user)
-	fmt.Println("Migration successful...")
-	defer db.Close()
-}
-
-// init is going to have the DB connections and any one-time tasks
-func init() {
-	// server := "postgres"
-	// database := "kenya"
-	// Connect(server, database)
-	Migrate()
-}
 
 // CreateEndPoint is a POST handler that posts a new user
 var CreateEndPoint = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
-	defer r.Body.Close()
-
+	db, err := services.DbConnect()
+	defer db.Close()
 	if err != nil {
 		panic("Connection to database failed")
 	}
@@ -97,8 +66,8 @@ var CreateEndPoint = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reques
 
 // EditEndPoint is a PUT handler that edits a database record
 var EditEndPoint = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
-	defer r.Body.Close()
+	db, err := services.DbConnect()
+	defer db.Close()
 	if err != nil {
 		panic("Connection to database failed")
 	}
@@ -131,8 +100,8 @@ var EditEndPoint = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 
 // AllEndPoint is a GET handler that fetches all users in the database
 var AllEndPoint = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
-	defer r.Body.Close()
+	db, err := services.DbConnect()
+	defer db.Close()
 	if err != nil {
 		panic("Connection to database failed")
 	}
@@ -155,8 +124,8 @@ var AllEndPoint = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 // SearchEndpoint is a GET handler for searching for a specific user from the
 // database using a first name as the unique parameter
 var SearchEndpoint = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
-	defer r.Body.Close()
+	db, err := services.DbConnect()
+	defer db.Close()
 	if err != nil {
 		panic("Connection to database failed")
 	}
@@ -185,8 +154,8 @@ var SearchEndpoint = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reques
 
 // DeleteEndPoint handler deletes a user record using a given user name
 var DeleteEndPoint = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
-	defer r.Body.Close()
+	db, err := services.DbConnect()
+	defer db.Close()
 	if err != nil {
 		panic("Connection to database failed")
 	}
@@ -208,8 +177,8 @@ var mySigningKey = []byte("secret")
 
 // SignIn handler signs in a user with a given email and password
 func SignIn(w http.ResponseWriter, r *http.Request) {
-	db, err := gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=kenya sslmode=disable")
-	defer r.Body.Close()
+	db, err := services.DbConnect()
+	defer db.Close()
 	if err != nil {
 		panic("Connection to database failed")
 	}
