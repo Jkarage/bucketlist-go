@@ -1,13 +1,31 @@
 package main
 
 import (
+	"controllers"
 	"log"
 	"net/http"
 	"os"
 	"routes"
+	"services"
 
 	"github.com/gorilla/handlers"
 )
+
+// Migrate function helps with the database migrations
+func Migrate() {
+	db, _ := services.DbConnect()
+	defer db.Close()
+	if err := db.AutoMigrate(&controllers.User{}).Error; err != nil {
+		log.Fatalln("Error migrating the database ", err.Error())
+	} else {
+		log.Println("Migration successful...")
+	}
+}
+
+// init is going to have the DB connections and any one-time tasks
+// func init() {
+// 	Migrate()
+// }
 
 // Define HTTP request routes
 func main() {
@@ -34,3 +52,5 @@ func main() {
 // 	/* Finally, write the token to the browser window */
 // 	w.Write([]byte(tokenString))
 // })
+
+// Proper error handling and display in a more meaningful way
