@@ -16,6 +16,9 @@ func SetAllUserRoutes(router *mux.Router) *mux.Router {
 	// Create a new user
 	router.Handle("/signup", controllers.CreateEndPoint).Methods("POST")
 
+	// Sign in a registered user
+	router.HandleFunc("/signin", controllers.SignIn).Methods("POST")
+
 	// Edit a user
 	router.Handle("/user/{name}", controllers.JwtMiddleware.Handler(controllers.EditEndPoint)).Methods("PUT")
 
@@ -24,9 +27,6 @@ func SetAllUserRoutes(router *mux.Router) *mux.Router {
 
 	// Search for a user
 	router.Handle("/user/{name}", controllers.JwtMiddleware.Handler(controllers.SearchEndpoint)).Methods("GET")
-
-	// Sign in a registered user
-	router.HandleFunc("/signin", controllers.SignIn).Methods("POST")
 
 	return router
 
