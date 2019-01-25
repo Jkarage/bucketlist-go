@@ -28,8 +28,14 @@
 			"type": "shell",
 			"inline": [
 				"git clone https://github.com/davidmukiibi/bucketlist-go.git",
-				"chmod +x bucketlist-go/setup-go.sh",
-				"./bucketlist-go/setup-go.sh"
+				"echo \"cloning the code completed successfully.\""
+			]
+		},
+		{
+			"type": "shell",
+			"inline": [
+				"echo \"changing to app working directory\"",
+				"cd bucketlist-go && chmod +x setup-go.sh && ./setup-go.sh"
 			]
 		}
 		

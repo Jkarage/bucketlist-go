@@ -29,11 +29,9 @@ setup_go() {
 	go get -u golang.org/x/crypto/bcrypt
     echo "Downloading and installing supporting Go packages finished..."
     go install controllers
-    echo "this is done 1"
     go install routes
-    echo "this is done 2"
     go install services
-    echo "this is done 3"
+    echo "Package Installation Complete..."
 }
 
 main() {
