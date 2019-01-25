@@ -17,8 +17,11 @@ install_go() {
     source $HOME/.profile
     echo "this is done 6"
     go install controllers routes services
+    echo "this is done 7"
     go get -u golang.org/x
+    echo "this is done 8"
     go get -u github.com
+    echo "this is done 9"
 }
 
 main() {
