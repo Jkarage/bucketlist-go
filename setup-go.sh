@@ -15,30 +15,20 @@ install_go() {
 
 setup_go() {
     go get -u github.com/gorilla/handlers
-    echo "this is done 1"
     go get -u github.com/auth0/go-jwt-middleware
-    echo "this is done 2"
 	go get -u github.com/dgrijalva/jwt-go
-    echo "this is done 3"
 	go get -u github.com/gorilla/mux
-    echo "this is done 4"
 	go get -u github.com/jinzhu/gorm
-    echo "this is done 5"
 	go get -u github.com/lib/pq
-    echo "this is done 6"
     go get -u github.com/joho/godotenv
-    echo "this is done 7"
     go get -u github.com/jinzhu/gorm/dialects/postgres
-    echo "this is done 8"
 	go get -u golang.org/x/crypto/bcrypt
-    echo "this is done 9"
-    echo "this is the pwd"
-    pwd
-    echo "this is the ls"
-    ls
-    # cd bucketlist-go && go install controllers && go install routes && go install services
-    # echo "this is done 10"
-
+    go install controllers
+    echo "this is done 1"
+    go install routes
+    echo "this is done 2"
+    go install services
+    echo "this is done 3"
 }
 
 main() {
