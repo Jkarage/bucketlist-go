@@ -10,13 +10,14 @@ install_go() {
     tar -C /usr/local -xvzf go1.11.2.linux-amd64.tar.gz
     export PATH=$PATH:/usr/local/go/bin
     source $HOME/.profile
-    echo "go installation done..."
+    echo "Go installation done..."
 }
 
 setup_go() {
-    echo "exporting GOPATH"
+    echo "exporting GOPATH..."
     export GOPATH=~/bucketlist-go
-    echo "exported GOPATH"
+    echo "exported GOPATH..."
+    echo "Downloading and installing supporting Go packages..."
     go get -u github.com/gorilla/handlers
     go get -u github.com/auth0/go-jwt-middleware
 	go get -u github.com/dgrijalva/jwt-go
@@ -26,6 +27,7 @@ setup_go() {
     go get -u github.com/joho/godotenv
     go get -u github.com/jinzhu/gorm/dialects/postgres
 	go get -u golang.org/x/crypto/bcrypt
+    echo "Downloading and installing supporting Go packages finished..."
     go install controllers
     echo "this is done 1"
     go install routes
