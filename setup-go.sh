@@ -14,7 +14,6 @@ install_go() {
 }
 
 setup_go() {
-    # go install controllers routes services
     go get -u github.com/gorilla/handlers
     echo "this is done 1"
     go get -u github.com/auth0/go-jwt-middleware
@@ -33,6 +32,8 @@ setup_go() {
     echo "this is done 8"
 	go get -u golang.org/x/crypto/bcrypt
     echo "this is done 9"
+    cd bucketlist-go && go install controllers && go install routes && go install services
+    echo "this is done 10"
 }
 
 main() {
