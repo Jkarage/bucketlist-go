@@ -32,8 +32,13 @@ setup_go() {
     echo "this is done 8"
 	go get -u golang.org/x/crypto/bcrypt
     echo "this is done 9"
-    cd bucketlist-go && go install controllers && go install routes && go install services
-    echo "this is done 10"
+    echo "this is the pwd"
+    pwd
+    echo "this is the ls"
+    ls
+    # cd bucketlist-go && go install controllers && go install routes && go install services
+    # echo "this is done 10"
+
 }
 
 main() {
