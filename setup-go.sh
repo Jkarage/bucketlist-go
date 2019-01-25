@@ -10,6 +10,9 @@ install_go() {
     tar -C /usr/local -xvzf go1.11.2.linux-amd64.tar.gz
     export PATH=$PATH:/usr/local/go/bin
     source $HOME/.profile
+    go install controllers routes services
+    go get -u golang.org/x
+    go get -u github.com
 }
 
 main() {
