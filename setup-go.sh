@@ -14,6 +14,9 @@ install_go() {
 }
 
 setup_go() {
+    echo "exporting GOPATH"
+    export GOPATH=~/bucketlist-go
+    echo "exported GOPATH"
     go get -u github.com/gorilla/handlers
     go get -u github.com/auth0/go-jwt-middleware
 	go get -u github.com/dgrijalva/jwt-go
@@ -23,8 +26,6 @@ setup_go() {
     go get -u github.com/joho/godotenv
     go get -u github.com/jinzhu/gorm/dialects/postgres
 	go get -u golang.org/x/crypto/bcrypt
-    export GOPATH=~/bucketlist-go
-    echo "exported GOPATH"
     go install controllers
     echo "this is done 1"
     go install routes
