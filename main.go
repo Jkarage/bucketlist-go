@@ -1,12 +1,13 @@
 package main
 
 import (
-	"controllers"
 	"log"
 	"net/http"
 	"os"
-	"routes"
-	"services"
+
+	"github.com/davidmukiibi/controllers"
+	"github.com/davidmukiibi/routes"
+	"github.com/davidmukiibi/services"
 
 	"github.com/gorilla/handlers"
 )
