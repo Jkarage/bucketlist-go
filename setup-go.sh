@@ -15,22 +15,26 @@ install_go() {
 
 setup_go() {
     echo "exporting GOPATH..."
-    export GOPATH=/bucketlist-go
+    export GOPATH=~/bucketlist-go
     echo "exported GOPATH..."
     echo "Downloading and installing supporting Go packages..."
-    go get -u github.com/gorilla/handlers
-    go get -u github.com/auth0/go-jwt-middleware
-	go get -u github.com/dgrijalva/jwt-go
-	go get -u github.com/gorilla/mux
-	go get -u github.com/jinzhu/gorm
-	go get -u github.com/lib/pq
-    go get -u github.com/joho/godotenv
-    go get -u github.com/jinzhu/gorm/dialects/postgres
-	go get -u golang.org/x/crypto/bcrypt
+
+    go get -u github.com/gorilla/handlers \
+    github.com/auth0/go-jwt-middleware \
+    github.com/dgrijalva/jwt-go \
+    github.com/gorilla/mux \
+    github.com/jinzhu/gorm \
+    github.com/lib/pq \
+    github.com/joho/godotenv \
+    github.com/jinzhu/gorm/dialects/postgres \
+    golang.org/x/crypto/bcrypt
+
     echo "Downloading and installing supporting Go packages finished..."
-    go install controllers
-    go install routes
-    go install services
+
+    go install controllers \
+    routes \
+    services
+    
     echo "Package Installation Complete..."
 }
 
