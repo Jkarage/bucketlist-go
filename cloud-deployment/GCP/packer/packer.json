@@ -35,7 +35,7 @@
 			"type": "shell",
 			"inline": [
 				"echo \"Changing to app working directory\"",
-				"cd bucketlist-go && chmod +x cloud-deployment/GCP/packer/setup-go.sh && ./cloud-deployment/GCP/packer/setup-go.sh"
+				"cd bucketlist-go && chmod +x cloud-deployment/GCP/packer/setup_go.sh && ./cloud-deployment/GCP/packer/setup_go.sh"
 			]
 		}
 		
