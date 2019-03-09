@@ -10,12 +10,12 @@ install_go() {
     tar -C /usr/local -xvzf go1.11.2.linux-amd64.tar.gz
     export PATH=$PATH:/usr/local/go/bin
     source $HOME/.profile
-    echo "Go installation done..."
+    echo "Go Installation & Setup Completed Successfully..."
 }
 
 setup_go() {
     echo "exporting GOPATH..."
-    export GOPATH=~/bucketlist-go
+    export GOPATH=/bucketlist-go
     echo "exported GOPATH..."
     echo "Downloading and installing supporting Go packages..."
     go get -u github.com/gorilla/handlers
