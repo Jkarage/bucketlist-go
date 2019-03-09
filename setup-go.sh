@@ -34,7 +34,7 @@ setup_go() {
     echo "this is ls"
     ls
     echo "this is pwd"
-    `pwd`
+    pwd
     go install controllers \
     routes \
     services
