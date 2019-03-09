@@ -31,10 +31,14 @@ setup_go() {
 
     echo "Downloading and installing supporting Go packages finished..."
 
+    echo "this is ls"
+    ls
+    echo "this is pwd"
+    `pwd`
     go install controllers \
     routes \
     services
-    
+
     echo "Package Installation Complete..."
 }
 
