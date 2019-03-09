@@ -33,9 +33,14 @@ setup_go_app() {
     echo "Downloading and installing supporting Go packages finished..."
 }
 
+start_app(){
+    go run main.go
+}
+
 main() {
     install_go
     setup_go_app
+    start_app
 }
 
 main "$@"
