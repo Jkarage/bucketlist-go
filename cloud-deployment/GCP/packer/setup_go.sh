@@ -40,7 +40,7 @@ start_app(){
 main() {
     install_go
     setup_go_app
-    start_app
+    # start_app
 }
 
 main "$@"
