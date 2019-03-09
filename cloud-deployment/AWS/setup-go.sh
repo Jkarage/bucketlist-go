@@ -27,14 +27,11 @@ setup_go() {
     github.com/lib/pq \
     github.com/joho/godotenv \
     github.com/jinzhu/gorm/dialects/postgres \
-    golang.org/x/crypto/bcrypt
-
+    golang.org/x/crypto/bcrypt \
+    github.com/davidmukiibi/controllers \
+    github.com/davidmukiibi/routes \
+    github.com/davidmukiibi/services
     echo "Downloading and installing supporting Go packages finished..."
-    go install controllers \
-    routes \
-    services
-
-    echo "Package Installation Complete..."
 }
 
 start_app(){
