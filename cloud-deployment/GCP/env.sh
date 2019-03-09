@@ -1,0 +1,16 @@
+export TF_VAR_org_id=andela.com
+export TF_VAR_billing_account=01E0FB-FDD3E2-529EA8
+export TF_ADMIN=terraform-admin-123000999
+export TF_CREDS=~/workspace/bucketlist-go/cloud-deployment/GCP/shared/terraform.json
+export TF_VAR_project_name=${USER}-test-compute
+export TF_VAR_region=us-central1
+export GOOGLE_CLOUD_KEYFILE_JSON=~/workspace/bucketlist-go/cloud-deployment/GCP/shared/terraform.json
+export GOOGLE_APPLICATION_CREDENTIALS=${TF_CREDS}
+export GOOGLE_PROJECT=${TF_ADMIN}
+export PROJECT_ID=terraform-admin-123000999
+export COMPUTE_REGION=europe-west1
+export COMPUTE_ZONE=europe-west1-b
+export GO_SOURCE_CODE_PATH=~/workspace/bucketlist-go
+export GOPATH=~/bucketlist-go
+export SSH_USER=go_user
+export ENV_NAME=test
