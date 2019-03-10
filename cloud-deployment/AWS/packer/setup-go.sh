@@ -13,12 +13,11 @@ install_go() {
     echo "Go Installation & Setup Completed Successfully..."
 }
 
-setup_go() {
+setup_go_app() {
     echo "exporting GOPATH..."
     export GOPATH=~/bucketlist-go
     echo "exported GOPATH..."
     echo "Downloading and installing supporting Go packages..."
-
     go get -u github.com/gorilla/handlers \
     github.com/auth0/go-jwt-middleware \
     github.com/dgrijalva/jwt-go \
@@ -34,11 +33,14 @@ setup_go() {
     echo "Downloading and installing supporting Go packages finished..."
 }
 
-
+start_app(){
+    go run main.go
+}
 
 main() {
     install_go
-    setup_go
+    setup_go_app
+    start_app
 }
 
 main "$@"
