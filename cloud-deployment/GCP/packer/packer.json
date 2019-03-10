@@ -19,7 +19,8 @@
 			"source_image_family": "ubuntu-1604-lts",
 			"image_name": "{{user `ENV_NAME`}}-go-app-image-{{timestamp}}",
 			"disk_size": 10,
-			"account_file": "{{user `SERVICE_ACCOUNT_JSON`}}"
+			"account_file": "{{user `SERVICE_ACCOUNT_JSON`}}",
+			"startup_script_file": "start-app.sh"
 		}
 	],
 	"provisioners": [
