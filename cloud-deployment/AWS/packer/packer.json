@@ -43,9 +43,8 @@
 			"inline": "cd bucketlist-go && chmod +x cloud-deployment/AWS/packer/start_app.sh"
 		},
 		{
-			"type": "file",
-			"source": "bucketlist-go/cloud-deployment/AWS/packer/start_app.sh",
-			"destination": "chmod +x /etc/init.d/"
+			"type": "shell",
+			"inline": "chmod +x bucketlist-go/cloud-deployment/AWS/packer/start_app.sh && cp bucketlist-go/cloud-deployment/AWS/packer/start_app.sh /etc/init.d/"
 		}
 		
 	]
