@@ -33,7 +33,7 @@
 		},
 		{
 			"type": "shell",
-			"inline": "chmod +x setup-ansible.sh && ./setup-ansible.sh"
+			"inline": "cd bucketlist-go/cloud-deployment/AWS/packer && chmod +x setup-ansible.sh && ./setup-ansible.sh"
 		},
 		{
 			"type": "ansible-local",
