@@ -33,6 +33,18 @@
 		},
 		{
 			"type": "shell",
+			"inline": "mkdir workdir/ && wget https://releases.hashicorp.com/packer/1.1.0/packer_1.1.0_linux_amd64.zip && unzip packer_1.1.0_linux_amd64.zip && sudo chmod +x packer && sudo mv packer /usr/local/bin/"
+		},
+		{
+			"type": "shell",
+			"inline": "sudo rm -rf workdir/"
+		},
+		{
+			"type": "ansible-local",
+			"playbook_file": "configure_go.yaml"
+		},
+		{
+			"type": "shell",
 			"inline": [
 				"echo \"changing to app working directory\"",
 				"cd bucketlist-go && chmod +x cloud-deployment/AWS/packer/setup-go.sh && ./cloud-deployment/AWS/packer/setup-go.sh"
