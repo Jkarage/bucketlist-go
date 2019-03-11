@@ -43,7 +43,7 @@ setup_go_app() {
 main() {
     install_go
     setup_go_app
-    setup_ansible
+    setup_postgres
 }
 
 main "$@"
