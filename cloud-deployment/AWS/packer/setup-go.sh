@@ -6,6 +6,8 @@ set -o pipefail
 setup_postgres() {
     # sudo pkill apt-get
     # sudo pkill apt
+    sudo rm /var/lib/dpkg/lock-frontend
+    sudo dpkg --configure -a
 	sudo apt-get update
     sudo apt-get install -y postgresql postgresql-contrib
 }
