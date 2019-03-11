@@ -6,7 +6,6 @@ set -o pipefail
 setup_postgres() {
     # sudo pkill apt-get
     # sudo pkill apt
-    sudo echo "Europe/Dublin" > /etc/timezone
     sudo dpkg-reconfigure -f noninteractive tzdata
     export DEBIAN_FRONTEND=noninteractive
     sudo rm /var/lib/apt/lists/lock
