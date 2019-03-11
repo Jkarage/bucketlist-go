@@ -36,10 +36,6 @@
 			"inline": "cd bucketlist-go/cloud-deployment/AWS/packer && chmod +x setup-ansible.sh && ./setup-ansible.sh"
 		},
 		{
-			"type": "ansible-local",
-			"playbook_file": "configure_go.yaml"
-		},
-		{
 			"type": "shell",
 			"inline": [
 				"echo \"changing to app working directory\"",
