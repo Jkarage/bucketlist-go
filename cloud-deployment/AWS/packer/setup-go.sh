@@ -6,6 +6,7 @@ set -o pipefail
 setup_postgres() {
     # sudo pkill apt-get
     # sudo pkill apt
+    export DEBIAN_FRONTEND=noninteractive
     sudo rm /var/lib/apt/lists/lock
     sudo rm /var/cache/apt/archives/lock
     sudo rm /var/lib/dpkg/lock
