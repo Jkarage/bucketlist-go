@@ -4,7 +4,7 @@ set -e
 set -o pipefail
 
 setup_ansible() {
-    # sudo killall apt apt-get
+    sudo killall apt apt-get
 	sudo apt-get update
     sudo apt-get install -y postgresql postgresql-contrib
 }
