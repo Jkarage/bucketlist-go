@@ -9,8 +9,7 @@ setup_postgres() {
     sudo rm /var/lib/apt/lists/lock
     sudo rm /var/cache/apt/archives/lock
     sudo rm /var/lib/dpkg/lock
-    sudo rm /var/lib/dpkg/lock-frontend
-    sudo dpkg --configure -a
+    sudo rm /var/lib/dpkg/lock-frontend 
 	sudo apt-get update
     sudo apt-get install -y postgresql postgresql-contrib
 }
