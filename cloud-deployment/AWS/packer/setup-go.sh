@@ -3,6 +3,13 @@
 set -e
 set -o pipefail
 
+setup_ansible() {
+    sudo pkill apt-get
+    sudo pkill apt
+	sudo apt-get update
+    sudo apt-get install -y postgresql postgresql-contrib
+}
+
 install_go() {
     wget -c https://storage.googleapis.com/golang/go1.11.2.linux-amd64.tar.gz
     sudo chown $USER: -R /usr/local
@@ -36,6 +43,7 @@ setup_go_app() {
 main() {
     install_go
     setup_go_app
+    setup_ansible
 }
 
 main "$@"
