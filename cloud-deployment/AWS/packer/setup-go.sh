@@ -4,16 +4,9 @@ set -e
 set -o pipefail
 
 setup_postgres() {
-    # sudo pkill apt-get
-    # sudo pkill apt
-    # sudo dpkg-reconfigure -f noninteractive tzdata
-    export DEBIAN_FRONTEND=noninteractive
-    sudo rm /var/lib/apt/lists/lock
-    sudo rm /var/cache/apt/archives/lock
-    sudo rm /var/lib/dpkg/lock
-    sudo rm /var/lib/dpkg/lock-frontend 
+    apt-get update upgrade dist-upgrade
 	sudo apt-get update
-    sudo apt-get install -y postgresql postgresql-contrib
+    sudo apt-get postgresql postgresql-contrib
 }
 
 install_go() {
