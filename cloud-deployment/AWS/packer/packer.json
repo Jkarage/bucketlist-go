@@ -34,14 +34,8 @@
 		{
 			"type": "shell",
 			"inline": [
-				"echo \"changing to app working directory\"",
-				"cd bucketlist-go && chmod +x cloud-deployment/AWS/packer/setup-go.sh && ./cloud-deployment/AWS/packer/setup-go.sh"
-			]
-		},
-		{
-			"type": "shell",
-			"inline": [
-				"cd bucketlist-go && chmod +x cloud-deployment/AWS/packer/start_app.sh && sudo cp cloud-deployment/AWS/packer/start_app.sh /etc/init.d"
+				"sudo apt-get update",
+				"sudo apt-get postgresql postgresql-contrib"
 			]
 		}
 		
