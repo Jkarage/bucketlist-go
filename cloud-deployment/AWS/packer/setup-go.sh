@@ -4,9 +4,12 @@ set -e
 set -o pipefail
 
 setup_postgres() {
-    apt-get update upgrade dist-upgrade
-	sudo apt-get update
-    sudo apt-get postgresql postgresql-contrib
+    # apt-get update upgrade dist-upgrade
+	# sudo apt-get update
+    # sudo apt-get postgresql postgresql-contrib
+    sudo yum update
+    sudo yum install postgresql postgresql-server postgresql-devel postgresql-contrib postgresql-docs
+
 }
 
 install_go() {
