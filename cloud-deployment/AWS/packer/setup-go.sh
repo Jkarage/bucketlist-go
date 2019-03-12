@@ -6,7 +6,7 @@ set -o pipefail
 setup_postgres() {
     # sudo pkill apt-get
     # sudo pkill apt
-    sudo dpkg-reconfigure -f noninteractive tzdata
+    # sudo dpkg-reconfigure -f noninteractive tzdata
     export DEBIAN_FRONTEND=noninteractive
     sudo rm /var/lib/apt/lists/lock
     sudo rm /var/cache/apt/archives/lock
