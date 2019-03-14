@@ -26,14 +26,18 @@
 	"provisioners": [
 		{
 			"type": "shell",
+			"inline": "sudo pip install ansible"
+		},
+		{
+			"type": "ansible-local",
+			"playbook_file": "config.yaml"
+		},
+		{
+			"type": "shell",
 			"inline": [
 				"git clone https://github.com/davidmukiibi/bucketlist-go.git",
 				"echo \"cloning the code completed successfully.\""
 			]
-		},
-		{
-			"type": "shell",
-			"inline": "sudo pip install ansible"
 		}
 		
 	]
