@@ -26,7 +26,7 @@
 	"provisioners": [
 		{
 			"type": "shell",
-			"inline": "pip install cryptography"
+			"inline": "sudo pip install cryptography"
 		},
 		{
 			"type": "shell",
