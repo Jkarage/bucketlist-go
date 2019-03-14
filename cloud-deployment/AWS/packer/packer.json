@@ -33,9 +33,7 @@
 		},
 		{
 			"type": "shell",
-			"inline": [
-				"sudo apt-get install -y postgresql-9.5 postgresql-contrib-9.5 postgresql postgresql-contrib"
-			]
+			"inline": "sudo pip install ansible"
 		}
 		
 	]
