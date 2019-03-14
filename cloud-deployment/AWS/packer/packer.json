@@ -26,8 +26,13 @@
 	"provisioners": [
 		{
 			"type": "shell",
+			"inline": "pip install --upgrade pip"
+		},
+		{
+			"type": "shell",
 			"inline": "sudo pip install ansible"
 		},
+
 		{
 			"type": "ansible-local",
 			"playbook_file": "config.yaml"
