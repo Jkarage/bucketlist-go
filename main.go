@@ -24,9 +24,9 @@ func Migrate() {
 }
 
 // init is going to have the DB connections and any one-time tasks
-// func init() {
-// 	Migrate()
-// }
+func init() {
+	Migrate()
+}
 
 // Define HTTP request routes
 func main() {
