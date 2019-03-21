@@ -1,4 +1,4 @@
-export GOPATH=~/workspace/bucketlist-go
+export GOPATH=~/bucketlist-go
 export DB_HOST=localhost
 export DB_DATABASE=kenya
 export DB_USER=postgres
