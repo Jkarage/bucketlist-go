@@ -4,12 +4,13 @@ set -e
 set -o pipefail
 
 install_go() {
-    wget -c https://storage.googleapis.com/golang/go1.11.2.linux-amd64.tar.gz
+    cd /tmp && wget -c https://storage.googleapis.com/golang/go1.11.2.linux-amd64.tar.gz
     sudo chown $USER: -R /usr/local
     sudo chmod u+w /usr/local
     tar -C /usr/local -xvzf go1.11.2.linux-amd64.tar.gz
     export PATH=$PATH:/usr/local/go/bin
     source $HOME/.profile
+    sudo rm -rf go1.11.2.linux-amd64.tar.gz
     echo "Go Installation & Setup Completed Successfully..."
 }
 
@@ -18,7 +19,7 @@ setup_go_app() {
     export GOPATH=~/bucketlist-go
     echo "exported GOPATH..."
     echo "Downloading and installing supporting Go packages..."
-    go get -u github.com/gorilla/handlers \
+    cd ~/bucketlist-go && go get -u github.com/gorilla/handlers \
     github.com/auth0/go-jwt-middleware \
     github.com/dgrijalva/jwt-go \
     github.com/gorilla/mux \
@@ -33,9 +34,14 @@ setup_go_app() {
     echo "Downloading and installing supporting Go packages finished..."
 }
 
+start_app() {
+    go run main.go
+}
+  
 main() {
     install_go
     setup_go_app
+    start_app
 }
 
 main "$@"
