@@ -14,7 +14,7 @@
 			"machine_type": "n1-standard-1",
 			"region": "europe-west1",
 			"zone": "europe-west1-b",
-			"ssh_username": "go_user",
+			"ssh_username": "ubuntu",
 			"image_description": "This is the AMI that holds my GO application",
 			"source_image_family": "ubuntu-1604-lts",
 			"image_name": "{{user `ENV_NAME`}}-go-app-image-{{timestamp}}",
@@ -31,14 +31,19 @@
 				"echo \"Cloning Go source code completed successfully.\""
 			]
 		},
-		
 		{
 			"type": "shell",
 			"inline": [
-				"echo \"Changing to app working directory\"",
-				"cd bucketlist-go && chmod +x cloud-deployment/GCP/packer/setup_go.sh && ./cloud-deployment/GCP/packer/setup_go.sh"
+				"sudo apt-get update",
+				"sudo apt-get install -y postgresql postgresql-contrib postgresql-client"
 			]
-		}
-		
+		},
+		{
+			"type": "shell",
+			"inline": [
+				"sudo cp bucketlist-go/cloud-deployment/GCP/packer/setup_go.sh /etc/init.d/",
+				"sudo chmod +x /etc/init.d/setup_go.sh"
+			]
+		}	
 	]
 }
