@@ -43,7 +43,7 @@ install_postgres() {
 }
 
 set_up_postgres() {
-    cp createdb.sql /docker-entrypoint-initdb.d
+    cp ~/bucketlist-go/cloud-deployment/GCP/packer/createdb.sql /docker-entrypoint-initdb.d
 }
 
 main() {
