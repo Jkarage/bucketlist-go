@@ -4,7 +4,7 @@ set -e
 set -o pipefail
 
 install_go() {
-    # sudo su ubuntu && \
+    sudo su ubuntu && \
     cd ~/bucketlist-go && wget -c https://storage.googleapis.com/golang/go1.11.2.linux-amd64.tar.gz && \
     sudo chown $USER: -R /usr/local && \
     sudo chmod u+w /usr/local && \
@@ -35,6 +35,16 @@ setup_go_app() {
     echo "Downloading and installing supporting Go packages finished..."
 }
 
+setting_env_vars() {
+    export DB_HOST=localhost && \
+    export DB_DATABASE=kenya && \
+    export DB_USER=postgres && \
+    export DB_PASS=secretsecretsecret && \
+    export SSL_MODE=disable && \
+    export DB_TYPE=postgres && \
+    export SECRET=some_random_secret_is_not_a_secret
+}
+
 install_postgres() {
     sudo apt-get update && \
     sudo apt-get install -y postgresql \
@@ -50,11 +60,18 @@ EOF
     cp createdatabase.sql /docker-entrypoint-initdb.d
 }
 
+set_up_postgres_user_password() {
+    sudo su postgres && \
+    psql -c "ALTER USER postgres WITH PASSWORD 'secretsecretsecret';"
+}
+
 main() {
+    setting_env_vars
     install_go
     setup_go_app
     install_postgres
     set_up_postgres
+    set_up_postgres_user_password
 }
 
 main "$@"
