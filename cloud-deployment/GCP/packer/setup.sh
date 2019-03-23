@@ -43,7 +43,11 @@ install_postgres() {
 }
 
 set_up_postgres() {
-    cp ~/bucketlist-go/cloud-deployment/GCP/packer/createdb.sql /docker-entrypoint-initdb.d
+    touch createdatabase.sql
+    cat <<EOF > createdb.sql
+    CREATE DATABASE kenya;
+EOF
+    cp createdatabase.sql /docker-entrypoint-initdb.d
 }
 
 main() {
