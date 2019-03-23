@@ -66,10 +66,10 @@ set_up_postgres_user_password() {
 }
 
 main() {
-    setting_env_vars
-    install_go
-    setup_go_app
-    install_postgres
+    # setting_env_vars
+    # install_go
+    # setup_go_app
+    # install_postgres
     set_up_postgres
     # set_up_postgres_user_password
 }
