@@ -71,7 +71,7 @@ main() {
     setup_go_app
     install_postgres
     set_up_postgres
-    set_up_postgres_user_password
+    # set_up_postgres_user_password
 }
 
 main "$@"
