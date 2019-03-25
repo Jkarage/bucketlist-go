@@ -15,10 +15,11 @@ export_env_vars() {
 	export SSL_MODE=disable
 	export DB_TYPE=postgres
 	export SECRET=some_random_secret_is_not_a_secret
+    echo "Exporting env vars Completed Successfully!"
 }
 
 downloading_packages() {
-    echo "Downloading and installing supporting Go packages..." && \
+    echo "Downloading and Installing supporting Go packages..." && \
     cd $GOPATH && go get -u github.com/gorilla/handlers \
     github.com/auth0/go-jwt-middleware \
     github.com/dgrijalva/jwt-go \
@@ -31,12 +32,13 @@ downloading_packages() {
     github.com/davidmukiibi/controllers \
     github.com/davidmukiibi/routes \
     github.com/davidmukiibi/services
-    echo "Downloading and installing supporting Go packages finished..."
+    echo "Downloading and Installing Supporting Go Packages Finished Successfully!"
 }
 
 start_app() {
-    echo "Starting the application..."
+    echo "Starting The Go Application..."
     cd $GOPATH && go run main.go
+    echo "Go Application Started Successfully!"
 }
 main() {
     export_env_vars
