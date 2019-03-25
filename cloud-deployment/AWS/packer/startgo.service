@@ -1,0 +1,12 @@
+[Unit]
+Description=Go app start service
+
+[Service]
+Type=simple
+Restart=on-failure
+RestartSec=1
+User=ubuntu
+ExecStart=/bin/bash /usr/bin/start.sh
+
+[Install]
+WantedBy=multi-user.target
