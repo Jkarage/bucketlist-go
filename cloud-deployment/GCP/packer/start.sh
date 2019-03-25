@@ -7,7 +7,6 @@ export_env_vars() {
     export GOPATH=$HOME/bucketlist-go
     export GOROOT=/usr/local/go
 	export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
-	# export PATH=$PATH:/usr/local/go/bin
 	export DB_HOST=localhost
 	export DB_DATABASE=kenya
 	export DB_USER=postgres

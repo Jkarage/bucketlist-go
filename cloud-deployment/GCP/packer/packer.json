@@ -1,13 +1,8 @@
 {
 	"variables": {
 		"SERVICE_ACCOUNT_JSON": "../shared/terraform.json",
-		"GO_SOURCE_CODE_PATH" : "{{env `GO_SOURCE_CODE_PATH`}}",
 		"PROJECT_ID": "{{env `PROJECT_ID`}}",
-		"GOPATH": "{{env `GOPATH`}}",
-		"SSH_USER": "{{env `SSH_USER`}}",
-		"ENV_NAME": "{{env `ENV_NAME`}}",
-		"STARTUP_SCRIPT": "/Users/davidcarsonmukiibi/workspace/bucketlist-go/cloud-deployment/GCP/packer/start.sh",
-		"SETUP_SCRIPT": "/Users/davidcarsonmukiibi/workspace/bucketlist-go/cloud-deployment/GCP/packer/setup.sh"
+		"ENV_NAME": "{{env `ENV_NAME`}}"
 	},
 	"builders": [
 		{
