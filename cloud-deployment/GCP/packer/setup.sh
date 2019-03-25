@@ -56,13 +56,9 @@ set_up_postgres() {
     touch createdatabase.sql
     cat <<EOF > createdb.sql
     CREATE DATABASE kenya;
+    ALTER USER postgres WITH PASSWORD 'secretsecretsecret';
 EOF
     cp createdatabase.sql /docker-entrypoint-initdb.d
-}
-
-set_up_postgres_user_password() {
-    sudo su postgres && \
-    psql -c "ALTER USER postgres WITH PASSWORD 'secretsecretsecret';"
 }
 
 main() {
@@ -71,7 +67,6 @@ main() {
     # setup_go_app
     # install_postgres
     set_up_postgres
-    # set_up_postgres_user_password
 }
 
 main "$@"
