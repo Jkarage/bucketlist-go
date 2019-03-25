@@ -8,7 +8,7 @@ install_go() {
 	sudo chown $USER: -R /usr/local && \
 	sudo chmod u+w /usr/local && \
 	tar -C /usr/local -xvzf go1.11.2.linux-amd64.tar.gz && \
-	echo "Go Installation & Setup Completed Successfully..."
+	echo "Go Installation & Setup Completed Successfully!"
 }
 
 install_postgres() {
@@ -16,7 +16,7 @@ install_postgres() {
     sudo apt-get install -y postgresql \
     postgresql-contrib \
     postgresql-client && \
-    echo "installing postgres server and client completed..."
+    echo "Installing Postgres Server and Client Completed Successfully!"
 }
 
 set_up_postgres() {
